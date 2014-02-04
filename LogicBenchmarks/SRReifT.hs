@@ -11,7 +11,7 @@
 -- CC monad and get rid of the 'r' parameter. The modifications let us
 -- simplify msplit by inlining mplus and reflect.
 
-module OtherCode.SRReifT (
+module LogicBenchmarks.SRReifT (
   SG, runM, observeT
 ) where
 

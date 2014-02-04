@@ -8,9 +8,10 @@ import System.IO
 
 -- the three implementations of Logic:
 
--- import Logic
-import OtherCode.SRReifT
--- import Control.Monad.Logic
+--import Logic -- our new implementation
+-- import Control.Monad.Logic -- two continuation implementation
+import OtherCode.SRReifT -- delimited continuations implementation
+
 
 natsFrom :: MonadPlus m => Integer -> m Integer
 natsFrom n = return n `mplus` natsFrom (n + 1)
@@ -19,7 +20,7 @@ nats = natsFrom 0
 
 runseq :: Int -> IO ()
 runseq n = do l <- observeT $ seqN n nats
-              print $ show $ length l
+              putStrLn $ show $ length l
 
 seqN :: MonadLogic m => Int -> m a -> m [a]
 seqN n m 
