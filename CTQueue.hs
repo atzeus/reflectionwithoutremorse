@@ -1,30 +1,28 @@
 {-# LANGUAGE GADTs, DataKinds, TypeOperators #-}
 
-module CTQueue(CTQueue,  where
+module CTQueue(module TSequence,CTQueue)  where
 -- Author : Atze van der Ploeg
 -- a simplified version of Okasaki's implicit recursive
 -- slowdown queues. 
 -- See purely functional data structures by Chris Okasaki 
 -- section 8.4: Queues based on implicit recursive slowdown
 
--- A very simple type aligned, purely functional deque with 
--- amortized O(1) operations (viewl, <|, viewr, |>)
+-- A very simple type aligned, purely functional queue with 
+-- amortized O(1) operations
 
-data TViewl s c x y where
-   TEmptyL  :: TViewl s c x x
-   (:|)     :: c x y -> s c y z -> TViewl s c x z
+import TSequence
 
 data P c a b where
   (:*) :: c a w -> c w b -> P c a b
 
 data B c a b where
   B1 :: c a b    -> B c a b
-  B2 :: P c a b  -> B c a b
+  B2 :: !(P c a b)  -> B c a b
 
 data Q c a b where
   Q0 :: Q c a a
   Q1 :: c a b -> Q c a b
-  QN :: B c a x -> Q (P c) x y -> B c y b -> Q c a b
+  QN :: !(B c a x) -> Q (P c) x y -> !(B c y b) -> Q c a b
 
 (|>) :: Q c a w -> c w b -> Q c a b
 q |> b = case q of
@@ -33,7 +31,7 @@ q |> b = case q of
   QN l m (B1 a)  -> QN l m (B2 (a :* b)) 
   QN l m (B2 r)  -> QN l (m |> r) (B1 b)
 
-viewl :: Q c a b -> TViewl Q c a b
+viewl :: Q c a b -> TViewL Q c a b
 viewl q = case q of
   Q0                    -> TEmptyL
   Q1 a                  -> a :| Q0
@@ -54,7 +52,7 @@ viewl q = case q of
 
 data CTQueue c a b where
   C0 :: CTQueue c a a
-  CN :: NECQueue c a b -> CTQueue c a b
+  CN :: !(NECQueue c a b) -> CTQueue c a b
 
 data NECQueue c a b where
   NE :: c a w -> Q (NECQueue c) w b -> NECQueue c a b

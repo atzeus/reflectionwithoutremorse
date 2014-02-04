@@ -1,9 +1,9 @@
 {-# LANGUAGE GADTs, ViewPatterns, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
-module PMonad (MExp, PMonad(..), (>>>), rid, val, expr, valm) where
+module PMonad (MExp, PMonad(..), (>>>), rid, val, expr, exprm, valm) where
 
 import Prelude hiding (id,(.))
 import Control.Category
-import Queue
+import CTQueue
 
 
 newtype MCont m a b = MCont { runMC :: a -> m b }
@@ -31,7 +31,8 @@ val (MExp q) = case tviewl q of
 expr :: PMonad m => (a -> m b) -> MExp m a b
 expr = MExp . tsingleton . MCont
 
-
+exprm :: PMonad m => m a -> MExp m () a 
+exprm m = expr (\() -> m)
 valm :: PMonad m => MExp m () a -> m a
 valm m = val m ()  
 

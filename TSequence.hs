@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs,TypeSynonymInstances,FlexibleInstances #-}
 
-module TSequenceClass(TSequence(..), TViewL(..), MSeq) where
+module TSequence(TSequence(..), TViewL(..), MSeq) where
 
 import Sequence
 import Control.Category
@@ -17,7 +17,7 @@ data TViewL s c x y where
    (:|)     :: c x y -> s c y z -> TViewL s c x z
 
 data MonoidMorphism a b c where 
-   MArr :: a -> MonoidMorphism a () ()
+   MArr :: !a -> MonoidMorphism a () ()
 
 newtype MSeq s a = MSeq { getMS :: s (MonoidMorphism a) () () }
 
