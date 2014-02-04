@@ -1,34 +1,24 @@
 {-# LANGUAGE GADTs,FlexibleInstances,UndecidableInstances #-}
 
-module PMonadPlus where
-
+module ExplicitExpr.PMonadPlus where
 
 import Control.Monad
-import CQueue
-import Data.Monoid
+import Data.CQueue
 
-newtype MExp s a = MExp (CQueue (s a))
- -- constructor not exported!
+type MExp s a = CQueue (s a)
  
 class PMonadPlus s where
-  (.++) :: s a -> MExp s a -> s a
-  mnaught    :: s a
-  -- laws:
-  -- (a .++ b) .++ c === a .++ exp (b .++ c)
-  -- a .++ exp mzero === a
-  -- mzero .++ exp b = b
+  mplus' :: s a -> MExp s a -> s a
+  mzero'    :: s a
 
 val :: PMonadPlus s => MExp s a -> s a
-val (MExp q) = case viewl q of
-  EmptyL -> mnaught
-  h :< t -> h .++ MExp t
+val q = case viewl q of
+  EmptyL -> mzero'
+  h :< t ->   mplus' h t
   
-expr = MExp . singleton
+expr =  singleton
 
 instance (PMonadPlus s, Monad s) => MonadPlus s where
-  mzero = mnaught
-  mplus a b = a .++ expr b
+  mzero =  mzero'
+  mplus a b = mplus' a (expr b)
   
-instance Monoid (MExp s a) where
-  (MExp a) `mappend` (MExp b) = MExp (a .>< b)
-  mempty = MExp empty

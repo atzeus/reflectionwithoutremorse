@@ -1,32 +1,24 @@
 {-# LANGUAGE GADTs, ViewPatterns, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
 
-module PMonoid (MExp, PMonoid(..), val, expr) where
+module ExplicitExpr.PMonoid where
 
 import Data.Monoid
-import CQueue
+import Data.CQueue
 
-newtype MExp a = MExp (CQueue a)
- -- constructor not exported!
- 
+type MExp a = CQueue a
+
 class PMonoid a where
-  (.++) :: a -> MExp a -> a
-  mnaught    :: a
-  -- laws:
-  -- (a .++ b) .++ c === a .++ exp (b .++ c)
-  -- a .++ exp mzero === a
-  -- mzero .++ exp b = b
+  (.++)   :: a -> MExp a -> a
+  mnaught :: a
 
 val :: PMonoid a => MExp a -> a
-val (MExp q) = case viewl q of
+val q = case viewl q of
   EmptyL -> mnaught
-  h :< t -> h .++ MExp t
+  h :< t -> h .++ t
   
-expr = MExp . singleton
+expr = singleton
 
 instance PMonoid a => Monoid a where
   a `mappend` b = a .++ expr b
   mempty = mnaught
   
-instance Monoid (MExp a) where
-  (MExp a) `mappend` (MExp b) = MExp (a .>< b)
-  mempty = MExp empty
