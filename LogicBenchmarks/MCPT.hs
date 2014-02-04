@@ -9,8 +9,8 @@ import Control.Monad.Logic.Class
 
 -- the three implementations of Logic:
 
-import Logic -- our new implementation
--- import Control.Monad.Logic -- two continuation implementation
+--import Logic -- our new implementation
+import Control.Monad.Logic -- two continuation implementation
 -- import OtherCode.SRReifT -- delimited continuations implementation
 
 -------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ bagofN :: MonadLogic m => Maybe Int -> m a -> m [a]
 bagofN (Just n) _ | n <= 0  = return []
 bagofN n m = msplit m >>= bagofN'
     where bagofN' Nothing = return []
-	  bagofN' (Just (a,m')) = bagofN (fmap (-1 +) n) m' >>= (return . (a:))
+	  bagofN' (Just (a,m')) = liftM (a:) (bagofN (fmap (-1 +) n) m')
 
 -- (M,C,B) on each side of the river
 type Left  = (Int,Int,Int)
@@ -98,19 +98,20 @@ solve_dfs (SearchS current seen actions) =
 	--                (show a) ++ "-> " ++ (show s)
     let news = SearchS s (s:seen) (a:actions)
     ifte (final s) 
-	 (const $ return news)
+         (const $ return news)
 	 (ifte (once (occurs s seen))
 	       (const $ mzero)
 	       (solve_dfs news))
 
 
-do'solve left = result >>= (print . show)
+do'solve nr left = result
       where s = (left, (0,0,0))
-	    result = observeT (bagofN Nothing $ solve_dfs (SearchS s [s] []))
+	    result = observeManyT nr $ solve_dfs (SearchS s [s] [])  >>= (lift . print . show  )
 
 
 main = do args <- getArgs 
           let n = read (head args)
           let m = read (head (tail args))
           let p = read (head (tail $ tail args))
-          do'solve (n,m,p)
+          let nr = read (head (tail $ tail $ tail $ args)) :: Int
+          do'solve nr (n,m,p)

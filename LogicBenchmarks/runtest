@@ -1,0 +1,17 @@
+#!/bin/bash
+x=0
+while [ $x -le 19840 ]
+do
+  y=0
+  total=0.0
+  while [ $y -lt 1 ]
+  do 
+   time=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+   y=$(( $y + 1 ))
+   total=$(echo "scale=3; $total+$time" | bc )
+  done
+  avg=$(echo "scale=3; $total / 1.0" | bc )
+  echo "$x $avg"
+  x=$(( $x + 250 ))
+done
+
