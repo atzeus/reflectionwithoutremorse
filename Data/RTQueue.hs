@@ -1,46 +1,37 @@
 {-# LANGUAGE GADTs, ViewPatterns, TypeOperators #-}
 
-data RTQueue where
+module Data.RTQueue where
 
 {- Queue with worst case O(1) operations!
    Based on Okasaki Simple and Efficient Purely Functional Queues and Deques
    Journal of Functional Programming
 -}
 
-
-data ConsList tc a b where
-  CNil  :: ConsList tc a a
-  (:>) :: tc a b -> ConsList tc b c -> ConsList tc a c
-
-data SnocList tc a b where
-  SNil  :: SnocList tc a a
-  (:<) :: SnocList tc a b -> tc b c -> SnocList tc a c
+import Data.TConsList
+import Data.TSnocList
+import Data.TSequence
 
 revAppend l r = rotate l r CNil
 -- precondtion : |a| = |f| - (|r| - 1)
 -- postcondition: |a| = |f| - |r|
-rotate :: ConsList tc a b -> SnocList tc b c -> ConsList tc c d -> ConsList tc a d
-rotate CNil  (SNil :< y) r = y :> r
-rotate (x :> f) (r :< y) a = x :> rotate f r (y :> a)
+rotate :: TConsList tc a b -> TSnocList tc b c -> TConsList tc c d -> TConsList tc a d
+rotate CNil  (SNil `Snoc` y) r = y `Cons` r
+rotate (x `Cons` f) (r `Snoc` y) a = x `Cons` rotate f r (y `Cons` a)
 rotate f        a     r  = error "Invariant |a| = |f| - (|r| - 1) broken"
 
-data Queue tc a b where
-  Queue :: !(ConsList tc a b) -> !(SnocList tc b c) -> !(ConsList tc x b) -> Queue tc a c
+data RTQueue tc a b where
+  RQ :: !(TConsList tc a b) -> !(TSnocList tc b c) -> !(TConsList tc x b) -> RTQueue tc a c
 
-queue :: ConsList tc a b -> SnocList tc b c -> ConsList tc x b -> Queue tc a c
+queue :: TConsList tc a b -> TSnocList tc b c -> TConsList tc x b -> RTQueue tc a c
 queue f r CNil = let f' = revAppend f r 
-                 in Queue f' SNil f'
-queue f r (h :> t) = Queue f r t
+                 in RQ f' SNil f'
+queue f r (h `Cons` t) = RQ f r t
 
-empty = Queue CNil SNil CNil
+instance TSequence RTQueue where
+ tempty = RQ CNil SNil CNil
+ tsingleton x = let c = tsingleton x in queue c SNil c
+ (RQ f r a) |> x = queue f (r `Snoc` x) a
 
-snoc (Queue f r a) x = queue f (r :< x) a
-
-view (Queue CNil SNil CNil) = Empty
-view (Queue (h :> t) f a) = h ::> queue t f a
-
-
-data ViewL tc a b where
-  Empty :: ViewL tc a a
-  (::>) :: tc a b -> Queue tc b c -> ViewL tc a c
+ tviewl (RQ CNil SNil CNil) = TEmptyL
+ tviewl (RQ (h `Cons` t) f a) = h :| queue t f a
 
