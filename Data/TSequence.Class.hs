@@ -2,7 +2,7 @@
 
 module Data.Interface.TSequence(TSequence(..), TViewL(..), TViewR(..)) where
 
-import Data.Interface.Sequence
+import Data.Sequence
 import Control.Category
 import Prelude hiding ((.),id)
 infixr 5 <|

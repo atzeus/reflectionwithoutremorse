@@ -3,7 +3,7 @@
 module Data.TSnocList where
 
 
-import Data.TSequence
+import Data.Interface.TSequence
 
 data TSnocList c x y where
   SNil :: TSnocList c x x

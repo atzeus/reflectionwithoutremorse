@@ -1,8 +1,8 @@
 {-# LANGUAGE GADTs,TypeSynonymInstances,FlexibleInstances #-}
 
-module Data.Interface.TSequence(TSequence(..), TViewL(..), TViewR(..)) where
+module Data.TSequence.Class(TSequence(..), TViewL(..), TViewR(..)) where
 
-import Data.Interface.Sequence
+import Data.Sequence.Class
 import Control.Category
 import Prelude hiding ((.),id)
 infixr 5 <|

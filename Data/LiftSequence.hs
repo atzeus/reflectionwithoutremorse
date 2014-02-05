@@ -7,8 +7,8 @@ module LiftSequence(module Data.TSequence, LiftSeq) where
 -- reorganize the ordering (for example due to a bug..)
 -- Use at your own risk!
 
-import Data.TSequence 
-import Data.Sequence 
+import Data.Interface.TSequence
+import Data.Interface.Sequence
 import Unsafe.Coerce
 
 data Any c where Any :: c a b -> Any c

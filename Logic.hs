@@ -7,7 +7,7 @@ import Control.Monad.Trans
 import Control.Monad.Logic.Class
 import Control.Monad.IO.Class
 import ExplicitExpr.PMonadPlus
-import Data.CQueue
+
 import Prelude
 
 {-
@@ -32,10 +32,12 @@ instance MonadTrans ML where
 
 instance Monad m => MonadLogic (ML m) where
   msplit (ML m) = lift m
+
+
 -}
 
 
-newtype ML m a = ML { getML :: m (Maybe (a, CQueue (ML m a))) } 
+newtype ML m a = ML { getML :: m (Maybe (a,MExp (ML m) a)) } 
 
 single a = return (Just (a,empty))
 
@@ -49,12 +51,12 @@ instance Monad m => PMonadPlus (ML m) where
   mzero'      = ML (return Nothing)
   mplus' (ML a) b = ML $ a >>= \x -> case x of
      Nothing    -> getML (val b)
-     Just (h,t) -> return (Just (h,t .>< b))
+     Just (h,t) -> return (Just (h,t >< b))
 
 instance MonadTrans ML where
   lift m     = ML (m >>= single)
 
-valTup :: Monad m => m (Maybe (a, CQueue (ML m a))) -> m (Maybe (a,ML m a))
+valTup :: Monad m => m (Maybe (a, MExp (ML m) a)) -> m (Maybe (a,ML m a))
 valTup m = liftM (fmap (\(a,b) -> (a,val b))) m
 
 instance Monad m => MonadLogic (ML m) where

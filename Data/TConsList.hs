@@ -2,7 +2,7 @@
 
 module Data.TConsList where
 
-import Data.TSequence
+import Data.Interface.TSequence
 
 data TConsList c x y where
   CNil :: TConsList c x x

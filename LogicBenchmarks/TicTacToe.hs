@@ -22,11 +22,11 @@ import System.Environment
 import System.IO
 
 
--- the three implementations of Logic:
+-- Implementations of Logic:
 
---import Logic -- our new implementation
-import Control.Monad.Logic -- two continuation implementation
--- import OtherCode.SRReifT -- delimited continuations implementation
+import Logic -- our new implementation
+--import Control.Monad.Logic -- two continuation implementation
+
 
 bagofN :: MonadLogic m => Maybe Int -> m a -> m [a]
 bagofN (Just n) _ | n <= 0  = return []
@@ -76,8 +76,8 @@ data Game = Game {
 		  board  :: Board
 		  }
 
-playGameAI :: Int -> Int -> IO ()
-playGameAI n m = observeT $ game (X,ai) (O,ai) where
+playGameAI :: Int -> Int -> Int -> Int -> IO ()
+playGameAI n m dlim blim = observeT $ game (X,ai) (O,ai) where
 
  move'loc'fn :: [(MoveFn,MoveFn)]
  move'loc'fn =
@@ -185,7 +185,7 @@ for us.
         = return (estimate'state p g,g)
     | otherwise
         = do
-            wbs <- bagofN (Just 5) (do
+            wbs <- bagofN Nothing (do
                 m   <- choose (moves g)
                 let g' = take'move p m g
                 (w,_) <- ai (other'player p) g'
@@ -252,7 +252,7 @@ win on the next move.  If so, you should move to block it.
     return (w,g')
 
  ai' :: (MonadLogic (t m), Monad m) => PlayerProc t m
- ai' p g = ai'lim m 6 p g
+ ai' p g = ai'lim dlim blim p g
   where 
   ai'lim dlim blim p g
     | Game{winner=Just _} <- g
@@ -273,5 +273,7 @@ win on the next move.  If so, you should move to block it.
 main = do args <- getArgs 
           let n = read (head args)
           let m = read (head (tail args))
-          playGameAI n m
+          let dlim = read (head (tail $ tail args))
+          let blim = read (head (tail $ tail $ tail args))
+          playGameAI n m dlim blim
 

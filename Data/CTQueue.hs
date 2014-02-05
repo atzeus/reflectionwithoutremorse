@@ -3,7 +3,7 @@
 module Data.CTQueue where
 
 
-import Data.TSequence
+import Data.Interface.TSequence
 
 -- Author : Atze van der Ploeg
 -- A purely functional catenable queue representation with
@@ -14,7 +14,7 @@ import Data.TSequence
 
 data CTQueue q c x y where
   C0 :: CTQueue q c x x
-  CN :: c x y -> q (CTQueue q c) y z -> CTQueue q c x z
+  CN :: c x y -> !(q (CTQueue q c) y z) -> CTQueue q c x z
 
 instance TSequence q => TSequence (CTQueue q) where
  tempty       = C0

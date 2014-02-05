@@ -9,7 +9,7 @@ module Data.RTQueue where
 
 import Data.TConsList
 import Data.TSnocList
-import Data.TSequence
+import Data.Interface.TSequence
 
 revAppend l r = rotate l r CNil
 -- precondtion : |a| = |f| - (|r| - 1)

@@ -10,7 +10,7 @@ module Data.CTQueue(module Data.TSequence,Q)  where
 -- A very simple type aligned, purely functional queue with 
 -- amortized O(1) operations
 
-import Data.TSequence
+import Data.Interface.TSequence
 
 data P c a b where
   (:*) :: c a w -> c w b -> P c a b

@@ -3,8 +3,8 @@
 
 module Data.LowerTSequence where
 
-import Data.Sequence
-import Data.TSequence
+import Data.Interface.Sequence
+import Data.Interface.TSequence
 import Data.Foldable
 import Data.Traversable
 import Control.Applicative hiding (empty)

@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs,FlexibleInstances,UndecidableInstances #-}
 
-module Data.Sequence where
+module Data.Interface.Sequence where
 
 import Data.Monoid
 import Data.Foldable
