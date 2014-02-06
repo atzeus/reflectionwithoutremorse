@@ -8,8 +8,8 @@ import Control.Monad.Logic.Class
 
 -- the three implementations of Logic:
 
-import Logic -- our new implementation
---import Control.Monad.Logic -- two continuation implementation
+--import Logic -- our new implementation
+import Control.Monad.Logic -- two continuation implementation
 -- import OtherCode.SRReifT -- delimited continuations implementation
 
 -------------------------------------------------------------------------------
