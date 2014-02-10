@@ -61,23 +61,24 @@ valTup m = liftM (fmap (\(a,b) -> (a,val b))) m
 
 instance Monad m => MonadLogic (ML m) where
   msplit (ML m) = lift (valTup m)
--- this fixes a bug in standard impl..
 
+
+
+
+
+
+
+
+
+
+
+
+
+-- this fixes a bug in standard impl..
   once m = msplit m >>= \x -> case x of
             Just (a,_) -> return a
             Nothing    -> mzero
 
-observeT :: Monad m => ML m a -> m a
-observeT (ML m) = liftM get m where
-  get (Just (a,_)) = a
-  get _            = error "No answers"
-
-observeManyT :: Monad m => Integer -> ML m a -> m [a]
-observeManyT n (ML m) 
-   | n == 0    = return []
-   | otherwise = m >>= get where
-      get (Just (a,t)) = liftM (a :) (observeManyT (n-1) (val t))
-      get _            = return []
 
 observeAllT :: Monad m => ML m a -> m [a]
 observeAllT (ML m) = m >>= get where

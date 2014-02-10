@@ -5,12 +5,13 @@ import System.Environment
 import System.IO
 
 import Control.Monad.Logic.Class
-
+import Control.Monad.Identity
 -- the three implementations of Logic:
 
 --import Logic -- our new implementation
-import Control.Monad.Logic -- two continuation implementation
--- import OtherCode.SRReifT -- delimited continuations implementation
+--import Control.Monad.Logic -- two continuation implementation
+import LogicBenchmarks.LogicCC  -- delimited continuations implementation
+
 
 -------------------------------------------------------------------------------
 -- Given M missionaries, C cannibals, and B boats where each boat 
@@ -103,14 +104,14 @@ solve_dfs (SearchS current seen actions) =
 	       (solve_dfs news))
 
 
-do'solve nr left = result >>= print . show . length
+do'solve nr left = result >>= (print . show . length) 
       where s = (left, (0,0,0))
-	    result = observeManyT  nr $ solve_dfs (SearchS s [s] [])  
+	    result = observeAllT$ bagofN (Just nr) $ solve_dfs (SearchS s [s] []) 
 
 
 main = do args <- getArgs 
           let n = read (head args)
           let m = read (head (tail args))
           let p = read (head (tail $ tail args))
-          let nr = read (head (tail $ tail $ tail $ args)) 
+          let nr = read (head (tail $ tail $ tail $ args)) :: Int 
           do'solve nr (n,m,p)
