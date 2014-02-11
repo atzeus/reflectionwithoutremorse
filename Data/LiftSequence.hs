@@ -1,5 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables,KindSignatures,GADTs, CPP #-}
-module LiftSequence(module Data.TSequence, LiftSeq) where
+module Data.LiftSequence(module Data.Interface.TSequence, LiftSeq) where
 
 -- Author : Atze van der Ploeg
 -- Lifts any sequence to a type-aligned sequence by coercion
