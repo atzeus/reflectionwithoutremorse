@@ -32,6 +32,7 @@ seqN n m
      Just (a,m) -> liftM (a:) $ seqN (n-1) m
 
 
+
 main = do args <- getArgs 
           let n = read (head args)
           runseq n
