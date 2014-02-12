@@ -1,11 +1,11 @@
 {-# LANGUAGE GADTs, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
-module ExplicitExpr.PCategory where
-
+module ExplicitExpr.PCategory(module Data.FastTCQueue, PCategory(..), CExp, val,expr) where
+import Data.FastTCQueue
 import Data.CTQueue
 import Control.Category
 import Prelude hiding ((.),id)
 
-type CExp c a b = CTQueue c a b
+type CExp c a b = FastTCQueue c a b
 
 class PCategory c where
   id'  :: c x x 

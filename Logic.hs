@@ -46,6 +46,7 @@ instance Monad m => Monad (ML m) where
   (ML m) >>= f = ML $ m >>= \x -> case x of
        Nothing    -> return Nothing
        Just (h,t) -> getML (f h `mplus` (val t >>= f))
+  fail _ = mzero
 
 instance Monad m => PMonadPlus (ML m) where
   mzero'      = ML (return Nothing)
@@ -71,13 +72,6 @@ instance Monad m => MonadLogic (ML m) where
 
 
 
-
-
-
--- this fixes a bug in standard impl..
-  once m = msplit m >>= \x -> case x of
-            Just (a,_) -> return a
-            Nothing    -> mzero
 
 
 observeAllT :: Monad m => ML m a -> m [a]

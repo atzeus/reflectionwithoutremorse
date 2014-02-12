@@ -1,10 +1,11 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, ScopedTypeVariables,ExistentialQuantification,GADTs,MultiParamTypeClasses,Rank2Types #-}
-module DCC(MonadDelimitedCont(..),reset,shift,control,shift0,control0,abort, Prompt, SubCont,CCT) where
+module CCT(MonadDelimitedCont(..),reset,shift,control,shift0,control0,abort, Prompt, SubCont,CCT,runCCT) where
+
+{- An implementation of delimited continuations using type aligned sequences -}
 
 import Data.Interface.TSequence
-import Data.RTQueue
-import Data.CTQueue
+import Data.FastTCQueue
 import Control.Monad.CC hiding (Prompt,SubCont, CC, CCT, runCCT,SubCont)
 import Control.Monad.Identity
 import Control.Monad.State
@@ -13,10 +14,10 @@ import Control.Monad.Trans
 import Unsafe.Coerce -- for Prompt equality
 
 newtype MCont m a b = MCont { runMC :: a -> m b }
-type MCExp m a b = CTQueue RTQueue (MCont m) a b
+type MCExp m a b = FastTCQueue (MCont m) a b
 
 data DelimCont r m a b = Delim (Prompt r b) (MCExp (CCT r m) a b)
-type DelimConts r m a b = CTQueue RTQueue (DelimCont r m) a b
+type DelimConts r m a b = FastTCQueue (DelimCont r m) a b
 data SubCont r m a b = forall w. SubCont {
    delimited :: DelimConts r m a w,
    top       :: MCExp (CCT r m) w b
