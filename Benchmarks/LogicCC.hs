@@ -1,5 +1,8 @@
 {-# LANGUAGE Rank2Types #-}
-module LogicBenchmarks.LogicCC where
+-- The delimited continuations implementation of LogicT as described 
+-- in the LogicT paper
+
+module BenchMarks.LogicCC where
 
 import Control.Monad
 import Control.Monad.Logic.Class

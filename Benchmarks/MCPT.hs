@@ -1,4 +1,9 @@
 
+
+{- A benchmark for LogicT: Find n solutions to the missionaries
+   and cannibals problem -}
+
+
 import Control.Monad
 import Control.Monad.Trans
 import System.Environment 

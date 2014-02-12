@@ -26,6 +26,7 @@ import System.IO
 
 import Logic -- our new implementation
 --import Control.Monad.Logic -- two continuation implementation
+--import LogicBenchmarks.LogicCC  -- delimited continuations implementation
 
 
 bagofN :: MonadLogic m => Maybe Int -> m a -> m [a]

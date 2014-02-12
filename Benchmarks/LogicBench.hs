@@ -6,11 +6,13 @@ import Control.Monad.Trans
 import System.Environment 
 import System.IO
 
+-- A micro-benchmark of LogicT
+
 -- the three implementations of Logic:
 
---import Logic -- our new implementation
+import Logic -- our new implementation
 -- import Control.Monad.Logic -- two continuation implementation
-import OtherCode.SRReifT -- delimited continuations implementation
+-- import BenchMarks.LogicCC -- delimited continuations implementation
 
 
 natsFrom :: MonadPlus m => Integer -> m Integer
