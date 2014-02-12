@@ -1,5 +1,7 @@
 {-# LANGUAGE KindSignatures, PatternGuards #-}
 
+-- Adapted from the LogicT code at http://okmij.org/ftp/Haskell/LogicT.tar.gz
+
 -- The TicTacToe problem for the NxN board
 -- M consecutive 'X' or 'O' marks in each column, row, or diagonal
 -- is a win for the corresponding player

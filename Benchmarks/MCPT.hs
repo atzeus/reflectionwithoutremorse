@@ -1,7 +1,9 @@
 
 
 {- A benchmark for LogicT: Find n solutions to the missionaries
-   and cannibals problem -}
+   and cannibals problem 
+Adapted from the LogicT code at http://okmij.org/ftp/Haskell/LogicT.tar.gz
+-}
 
 
 import Control.Monad
