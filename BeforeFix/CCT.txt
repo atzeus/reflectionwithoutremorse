@@ -1,0 +1,12 @@
+For the original implementation of delimited continuations, see 
+
+http://hackage.haskell.org/package/CC-delcont-0.2
+
+The code is here: 
+
+main : http://hackage.haskell.org/package/CC-delcont-0.2/docs/src/Control-Monad-CC.html#runCC
+
+Prompts : http://hackage.haskell.org/package/CC-delcont-0.2/docs/Control-Monad-CC-Prompt.html
+
+Sequence : http://hackage.haskell.org/package/CC-delcont-0.2/docs/src/Control-Monad-CC-Seq.html
+
