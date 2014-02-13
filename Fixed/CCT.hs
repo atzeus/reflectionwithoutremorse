@@ -1,6 +1,6 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving, ScopedTypeVariables,ExistentialQuantification,GADTs,MultiParamTypeClasses,Rank2Types #-}
-module CCT(MonadDelimitedCont(..),reset,shift,control,shift0,control0,abort, Prompt, SubCont,CCT,runCCT) where
+module Fixed.CCT(MonadDelimitedCont(..),reset,shift,control,shift0,control0,abort, Prompt, SubCont,CCT,runCCT) where
 
 {- An implementation of delimited continuations using type aligned sequences -}
 
@@ -48,6 +48,9 @@ data CCT r m a = forall w. CCT {
 instance Monad m => Monad (CCT r m) where
   return a = CCT (PAct (return a)) emptySC
   m >>= f = m !>>= singleSC f
+
+instance MonadTrans (CCT r) where
+  lift m =  CCT (PAct (lift m)) emptySC
 
 instance Monad m => MonadDelimitedCont (Prompt ans) (SubCont ans m) (CCT ans m) where
   newPrompt                          = CCT (PAct newPromptName) emptySC

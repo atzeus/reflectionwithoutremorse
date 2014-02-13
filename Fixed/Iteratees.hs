@@ -1,4 +1,4 @@
-module Iteratees where
+module Fixed.Iteratees where
 import Control.Monad 
 
 import ExplicitExpr.PMonad

@@ -1,4 +1,4 @@
-module IterateesBeforeFix where
+module BeforeFix.Iteratees where
 import Control.Monad
 
 data It i a 

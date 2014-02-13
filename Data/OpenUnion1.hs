@@ -13,7 +13,7 @@
 -- This implementation relies on _closed_ overlapping instances
 -- (or closed type function overlapping soon to be added to GHC)
 
-module OpenUnion1 (Union, inj, prj, decomp, 
+module Data.OpenUnion1 (Union, inj, prj, decomp, 
                    Member, MemberU, MemberU2, (:>), weaken
                   ) where
 

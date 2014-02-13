@@ -1,4 +1,4 @@
-module FreeMonadBeforeFix where
+module BeforeFix.FreeMonad where
 
 
 data FreeMonad f a = Pure a | Impure (f (FreeMonad f a))

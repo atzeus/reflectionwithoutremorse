@@ -1,5 +1,5 @@
 {-# LANGUAGE GADTs #-}
-module GenericTree where
+module Fixed.GenericTree where
 
 import Data.Interface.TSequence
 import qualified Data.CTQueue as C

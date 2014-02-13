@@ -6,7 +6,10 @@ module BeforeFix.LogicCC where
 
 import Control.Monad
 import Control.Monad.Logic.Class
-import Control.Monad.CC
+
+-- The only change: use our fixed CC implementation:
+import Fixed.CCT
+
 import Control.Monad.Reader
 
 

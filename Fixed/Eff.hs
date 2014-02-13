@@ -6,12 +6,12 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoMonomorphismRestriction,TypeSynonymInstances #-}
 
-module Eff where
+module Fixed.Eff where
 
 import Control.Monad
 import Data.Typeable
-import OpenUnion1
-import FreeMonad
+import Data.OpenUnion1
+import Fixed.FreeMonad
 
 -- Fixed version of the extensible effects
 -- framework at http://okmij.org/ftp/Haskell/extensible/Eff.hs

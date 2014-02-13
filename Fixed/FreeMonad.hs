@@ -1,4 +1,4 @@
-module FreeMonad(module ExplicitExpr.PMonad, FreeMonad(..)) where
+module Fixed.FreeMonad(module ExplicitExpr.PMonad, FreeMonad(..)) where
 
 
 import ExplicitExpr.PMonad

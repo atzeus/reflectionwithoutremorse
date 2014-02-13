@@ -6,7 +6,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module EffBeforeFix where
+module BeforeFix.Eff where
 
 import Control.Monad
 import Data.Typeable
