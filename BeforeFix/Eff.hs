@@ -10,7 +10,7 @@ module BeforeFix.Eff where
 
 import Control.Monad
 import Data.Typeable
-import OpenUnion1
+import Data.OpenUnion1
 
 -- This is a part of the code of the extensible effects
 -- framework at http://okmij.org/ftp/Haskell/extensible/Eff.hs
@@ -89,6 +89,26 @@ interpose :: (Typeable1 t, Functor t, Member t r) =>
 interpose u loop h = case prj u of
   Just x -> h x
   _       -> send (\k -> fmap k u) >>= loop
+
+--- ------------------------------------------------------------------------
+-- State, strict
+
+data State s w = State (s->s) (s -> w)
+  deriving (Typeable, Functor) 
+
+-- The signature is inferred
+put :: (Typeable s, Member (State s) r) => s -> Eff r ()
+put s = send (\k -> inj (State (const s) (\_ -> k ())))
+
+-- The signature is inferred
+get :: (Typeable s, Member (State s) r) => Eff r s
+get = send (\k -> inj (State id k))
+
+runState :: Typeable s => Eff (State s :> r) w -> s -> Eff r (w,s)
+runState m s = loop s (admin m) where
+ loop s (Val x) = return (x,s)
+ loop s (E u)   = handle_relay u (loop s) $
+                       \(State t k) -> let s' = t s in s' `seq` loop s' (k s')
 
 -- ------------------------------------------------------------------------
 -- Non-determinism (choice)

@@ -57,6 +57,26 @@ interpose u loop h = case prj u of
   Just x -> h x
   _       -> send u >>= loop
 
+--- ------------------------------------------------------------------------
+-- State, strict
+
+data State s w = State (s->s) (s -> w)
+  deriving (Typeable, Functor) 
+
+-- The signature is inferred
+put :: (Typeable s, Member (State s) r) => s -> Eff r ()
+put s = send (inj (State (const s) (const ())))
+
+-- The signature is inferred
+get :: (Typeable s, Member (State s) r) => Eff r s
+get =  send (inj (State id id))
+
+runState :: Typeable s => Eff (State s :> r) w -> s -> Eff r (w,s)
+runState m s = loop s m where
+ loop s (Pure x) = return (x,s)
+ loop s (Impure u) = handle_relay (fmap valm u) (loop s) $
+                       \(State t k) -> let s' = t s in s' `seq` loop s' (k s')
+
 -- ------------------------------------------------------------------------
 -- Non-determinism (choice)
 
