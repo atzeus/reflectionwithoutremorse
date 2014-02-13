@@ -9,6 +9,7 @@
 import Fixed.Eff
 --import BeforeFix.Eff
 
+{- A benchmark for extensible effects -}
 
 import System.Environment 
 import System.IO
