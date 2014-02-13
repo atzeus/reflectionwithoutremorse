@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, ViewPatterns, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
+{-# LANGUAGE OverlappingInstances,GADTs, ViewPatterns, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
 
 module ExplicitExpr.PMonoid where
 

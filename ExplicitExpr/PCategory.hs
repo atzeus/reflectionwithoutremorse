@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
+{-# LANGUAGE OverlappingInstances,GADTs, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
 module ExplicitExpr.PCategory(module Data.FastTCQueue, PCategory(..), CExp, val,expr) where
 import Data.FastTCQueue
 import Data.CTQueue

@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
+{-# LANGUAGE OverlappingInstances, GADTs, FlexibleInstances, UndecidableInstances, NoMonomorphismRestriction #-}
 module ExplicitExpr.PMonad(module Data.FastTCQueue, MExp, MCExp, PMonad(..), expr,val, exprm,valm)  where
 
 import Data.FastTCQueue
@@ -27,6 +27,8 @@ exprm m = expr (\() -> m)
 valm :: PMonad m => MExp m  a -> m a
 valm m = val m ()  
 
+
 instance PMonad m => Monad m where
   m >>= f = m >>>= expr f
   return = return'
+

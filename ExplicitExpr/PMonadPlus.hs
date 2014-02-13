@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs,FlexibleInstances,UndecidableInstances,NoMonomorphismRestriction #-}
+{-# LANGUAGE OverlappingInstances,GADTs,FlexibleInstances,UndecidableInstances,NoMonomorphismRestriction #-}
 
 module ExplicitExpr.PMonadPlus(module Data.Interface.Sequence, MExp,(><),val,expr, PMonadPlus(..))  where
 
