@@ -1,16 +1,15 @@
 #!/bin/bash
 x=0
-while [ $x -le 19840 ]
+while [ $x -le 10000 ]
 do
   y=0
   total=0.0
-  while [ $y -lt 5 ]
-  do 
-   time=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
-   y=$(( $y + 1 ))
-   total=$(echo "scale=3; $total+$time" | bc )
-  done
-  avg=$(echo "scale=3; $total / 5.0" | bc )
+  time1=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+  time2=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+  time3=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+  time4=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+  time5=$(/usr/bin/time --format="%U" ./runLogicBench $x 2>&1)
+  avg=$(./Median $time1 $time2 $time3 $time4 $time5 )
   echo "$x $avg"
   x=$(( $x + 50 ))
 done
