@@ -10,8 +10,8 @@ import System.IO
 
 -- the three implementations of Logic:
 
--- import BeforeFix.Logic -- direct style implementation
--- import Control.Monad.Logic -- two continuation implementation
+--import BeforeFix.Logic -- direct style implementation
+--import Control.Monad.Logic -- two continuation implementation
 import Fixed.Logic -- direct style implementation with our solution applied to it
 
 leftskewed n = foldl mplus mzero $ replicate n (return 1)

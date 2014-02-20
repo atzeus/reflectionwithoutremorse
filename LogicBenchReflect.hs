@@ -6,13 +6,13 @@ import Control.Monad.Trans
 import System.Environment 
 import System.IO
 
--- A micro-benchmark of LogicT
+-- A micro-benchmark of LogicT measuring repeated reflection
 
 -- the three implementations of Logic:
 
-import Logic -- our new implementation
--- import Control.Monad.Logic -- two continuation implementation
--- import BenchMarks.LogicCC -- delimited continuations implementation
+--import BeforeFix.Logic -- direct style implementation
+--import Control.Monad.Logic -- two continuation implementation
+import Fixed.Logic -- direct style implementation with our solution applied to it
 
 
 natsFrom :: MonadPlus m => Integer -> m Integer
@@ -21,7 +21,7 @@ nats :: MonadPlus m => m Integer
 nats = natsFrom 0
 
 runseq :: Int -> IO ()
-runseq n = do l <- observeT $ seqN n nats
+runseq n = do l <- observeAllT $ seqN n nats
               putStrLn $ show $ length l
 
 seqN :: MonadLogic m => Int -> m a -> m [a]
