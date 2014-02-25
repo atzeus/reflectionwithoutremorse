@@ -2,22 +2,21 @@
 
 -- choose Iteratees implementation:
 
---import Iteratees
-import IterateesBeforeFix
-
+--import BeforeFix.Iteratees
+import Fixed.Iteratees
 import Control.Monad 
 
 
 
-addGet :: Int -> It Int Int
-addGet x = liftM (+ x) get
+
 
 (>>>) :: Monad m => (a -> m b) -> (b -> m c) -> (a -> m c)
 f >>> g = (>>= g) . f
 
 -- get n numbers and return their sum
 addNbad :: Int -> It Int Int
-addNbad n = foldl (>>>) return (replicate n addGet) 0
+addNbad n = foldl (>>=) get (replicate (n - 1) addGet) 
+  where addGet x = liftM (+ x) get
 
 testquadratic n = feedAll (addNbad n) [1..n]
 
