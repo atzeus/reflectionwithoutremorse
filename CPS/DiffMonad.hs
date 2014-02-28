@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances,Rank2Types,FlexibleInstances,UndecidableInstances #-}
 module DiffMonad where
-
+-- I.e. the codensity monad transformer
 
 newtype DiffMonad m a = DiffMonad {getDM :: forall b. (a -> m b) -> m b} 
 
