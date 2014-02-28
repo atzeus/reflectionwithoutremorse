@@ -172,5 +172,28 @@ guard' :: Member Choose r => Bool -> Eff r ()
 guard' True  = return ()
 guard' False = mzero'
 
+ 
+-- ------------------------------------------------------------------------
+-- Co-routines
+-- The interface is intentionally chosen to be the same as in transf.hs
+
+-- The yield request: reporting the value of type e and suspending 
+-- the coroutine
+-- (For simplicity, a co-routine reports a value but accepts unit)
+data Yield inn out res = Yield out (inn -> res)
+    deriving (Typeable, Functor)
 
 
+yield :: (Typeable inn, Typeable out, Member (Yield inn out) r) => out -> Eff r inn
+yield x = send (inj . Yield x)
+
+-- Status of a thread: now can be composed again 
+data Y inn out r a = Done a | Y out (inn -> Eff (Yield inn out :> r) a)
+
+-- Launch a thread and report its status
+runC :: (Typeable inn, Typeable out) => Eff (Yield inn out :> r) a -> Eff r (Y inn out r a)
+runC m = loop (admin m) where
+ loop (Val x) = return (Done x)
+ loop (E u)   = case decomp u of
+   Right (Yield x c) -> return (Y x (reflect . c))
+   Left u -> send (\k -> fmap k u) >>= loop

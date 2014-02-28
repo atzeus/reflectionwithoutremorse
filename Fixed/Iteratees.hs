@@ -3,8 +3,8 @@ import Control.Monad
 
 import ExplicitExpr.PMonad
 
-data It i a 
-  = Get (MCExp (It i) i a)
+data It i s a 
+  = Get (MCExp s (It i) i a)
   | Done a
 
 instance PMonad (It i) where
@@ -12,9 +12,10 @@ instance PMonad (It i) where
   (Done x) >>>= g = val g x
   (Get f)  >>>= g = Get (f >< g)
 
+get :: TSequence s => It i s i
 get = Get tempty
 
-race :: It i a -> It i b -> It i (It i a, It i b)
+race :: TSequence s => It i s a -> It i s b -> It i s (It i s a, It i s b)
 race l r 
   | Done _ <- l = Done (l,r)
   | Done _ <- r = Done (l,r)
@@ -23,7 +24,7 @@ race l r
        race (val f x) (val g x)
 
 
-feedAll :: It a b -> [a] -> Maybe b
+feedAll :: TSequence s => It  a s b -> [a] -> Maybe b
 feedAll (Done a) _  = Just a
 feedAll _        [] = Nothing
 feedAll (Get f)  (h : t) = feedAll (val f h) t

@@ -35,6 +35,12 @@ observeAllT (ML m) = m >>= get where
       get (Just (a,t)) = liftM (a :) (observeAllT t)
       get _            = return []
 
+observeT :: Monad m => ML m a -> m a
+observeT (ML m) = m >>= get where
+      get (Just (a,t)) = return a
+      get _            = fail "No results"
+
+
 instance (MonadIO m) => MonadIO (ML m) where
     liftIO = lift . liftIO
 

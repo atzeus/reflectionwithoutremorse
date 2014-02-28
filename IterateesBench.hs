@@ -2,9 +2,13 @@
 
 -- choose Iteratees implementation:
 
-import BeforeFix.Iteratees
---import Fixed.Iteratees
+--import BeforeFix.Iteratees
+import Fixed.Iteratees
+import Data.FastTCQueue
 import Control.Monad 
+
+type Its i a = It i FastTCQueue a
+
 
 
 
@@ -14,7 +18,7 @@ import Control.Monad
 f >>> g = (>>= g) . f
 
 -- get n numbers and return their sum
-addNbad :: Int -> It Int Int
+addNbad :: Int -> Its Int Int
 addNbad n = foldl (>>=) get (replicate (n - 1) addGet) 
   where addGet x = liftM (+ x) get
 
