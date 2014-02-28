@@ -15,9 +15,9 @@ import Control.Monad.Logic.Class
 import Control.Monad.Identity
 -- the three implementations of Logic:
 
---import Logic -- our new implementation
+import Fixed.Logic -- our new implementation
 --import Control.Monad.Logic -- two continuation implementation
-import LogicBenchmarks.LogicCC  -- delimited continuations implementation
+--import LogicBenchmarks.LogicCC  -- delimited continuations implementation
 
 
 -------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ solve_dfs (SearchS current seen actions) =
 
 do'solve nr left = result >>= (print . show . length) 
       where s = (left, (0,0,0))
-	    result = observeAllT$ bagofN (Just nr) $ solve_dfs (SearchS s [s] []) 
+	    result = observeAllT$ solve_dfs (SearchS s [s] []) 
 
 
 main = do args <- getArgs 

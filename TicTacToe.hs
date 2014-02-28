@@ -26,7 +26,7 @@ import System.IO
 
 -- Implementations of Logic:
 
-import Logic -- our new implementation
+import Fixed.Logic -- our new implementation
 --import Control.Monad.Logic -- two continuation implementation
 --import LogicBenchmarks.LogicCC  -- delimited continuations implementation
 

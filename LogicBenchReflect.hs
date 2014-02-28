@@ -15,24 +15,21 @@ import System.IO
 import Fixed.Logic -- direct style implementation with our solution applied to it
 
 
-natsFrom :: MonadPlus m => Integer -> m Integer
-natsFrom n = return n `mplus` natsFrom (n + 1)
-nats :: MonadPlus m => m Integer
-nats = natsFrom 0
 
-runseq :: Int -> IO ()
-runseq n = do l <- observeAllT $ seqN n nats
-              putStrLn $ show $ length l
 
 seqN :: MonadLogic m => Int -> m a -> m [a]
-seqN n m 
-  | n == 0     = return []
-  | otherwise  = msplit m >>= \x -> case x of
-     Nothing    -> return []
-     Just (a,m) -> liftM (a:) $ seqN (n-1) m
+seqN n m | n == 0     = return []
+         | otherwise  = msplit m >>= \x -> case x of
+                          Nothing    -> return []
+                          Just (a,m) -> liftM (a:) $ seqN (n-1) m
+
+nats = natsFrom 0 where
+  natsFrom n = return n `mplus` natsFrom (n + 1)
+
+bench n = observeT $ seqN n nats
 
 
 
 main = do args <- getArgs 
           let n = read (head args)
-          runseq n
+          bench n

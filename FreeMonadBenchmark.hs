@@ -4,9 +4,8 @@
 
 
 -- choose and implementation of Free monads
-
-import FreeMonad
---import FreeMonadBeforeFix
+--import BeforeFix.FreeMonad
+import Fixed.FreeMonad
 
 import Control.Monad
 

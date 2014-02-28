@@ -5,9 +5,9 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoMonomorphismRestriction, IncoherentInstances #-}
-
-import Fixed.Eff
---import BeforeFix.Eff
+-- choose implementation
+--import Fixed.Eff
+import BeforeFix.Eff
 
 {- A benchmark for extensible effects -}
 

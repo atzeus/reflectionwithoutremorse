@@ -3,7 +3,7 @@
 -- choose delimited continuations implementation:
 
 --import Control.Monad.CC -- from Hackage package delim-cc
-import CCT -- our fixed implementation of the above
+import Fixed.CCT -- our fixed implementation of the above
 
 import Control.Monad.Identity
 
@@ -65,7 +65,7 @@ Performance is quadratic
 -}
 
 {-
-Benchmark results with CCT:
+Benchmark results with  Fixed.CCT:
 
 Performance is quadratic
 
@@ -101,4 +101,4 @@ Performance is quadratic
 10000
 (0.16 secs, 56221408 bytes)
 
-
+-}

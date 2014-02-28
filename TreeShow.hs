@@ -1,5 +1,7 @@
 module TreeShow where
 
+-- Example from the introduction
+
 data Tree = Leaf Int | Node Tree Tree
 
 show1 :: Tree -> String
