@@ -1,5 +1,5 @@
 {-# LANGUAGE GADTs #-}
-module BeforeFix.TermMonad where
+module Fixed.TermMonad where
 
 
 import ExplicitExpr.PMonad
