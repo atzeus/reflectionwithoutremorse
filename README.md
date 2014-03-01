@@ -7,3 +7,7 @@ This code is organized as follows:
 * AfterFix  contains the code of the same monads with our techniques applied
 * Data contains various type-aligned sequences
 * CPS contains various continuation passing style constructs
+
+To run the LogicT examples with a two continuation passing implementation do:
+
+cabal install logict
