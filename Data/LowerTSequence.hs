@@ -10,23 +10,23 @@ import Data.Traversable
 import Control.Applicative hiding (empty)
 import Data.Monoid
 
-data MonoidMorphism a b c where 
-   MArr :: !a -> MonoidMorphism a () ()
+data AsUnitLoop a b c where 
+   UL :: !a -> AsUnitLoop a () ()
 
-newtype MSeq s a = MSeq { getMS :: s (MonoidMorphism a) () () }
+newtype MSeq s a = MSeq { getMS :: s (AsUnitLoop a) () () }
 
 instance TSequence s => Sequence (MSeq s) where
   empty      = MSeq tempty
-  singleton  = MSeq . tsingleton . MArr
+  singleton  = MSeq . tsingleton . UL
   l .>< r    = MSeq $ getMS l >< getMS r
-  l .|> x    = MSeq $ getMS l |> MArr x
-  x .<| r    = MSeq $ MArr x <| getMS r
+  l .|> x    = MSeq $ getMS l |> UL x
+  x .<| r    = MSeq $ UL x <| getMS r
   viewl  s   = case tviewl (getMS s) of
      TEmptyL      -> EmptyL
-     MArr h :| t -> h :< MSeq t
+     UL h :| t -> h :< MSeq t
   viewr  s   = case tviewr (getMS s) of
      TEmptyR      -> EmptyR
-     p :|< MArr l -> MSeq p :> l
+     p :|< UL l -> MSeq p :> l
 
 
 instance TSequence s => Functor (MSeq s) where

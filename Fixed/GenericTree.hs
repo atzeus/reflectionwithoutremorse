@@ -1,33 +1,31 @@
-{-# LANGUAGE GADTs #-}
-module Fixed.GenericTree where
+{-# LANGUAGE ExistentialQuantification,GADTs #-}
+module Fixed.GenericTree(TreeView(..), TreeD, fromView, (<.|), toView) where
 
 import Data.Interface.TSequence
-import qualified Data.CTQueue as C
-import qualified Data.RTQueue as R
-type TCQueue = C.CTQueue R.RTQueue
+import Data.FastTCQueue
+type TCQueue = FastTCQueue
 
-newtype TreeCont a b = TC (a -> Tree b)
+newtype TreeCont a b = TC (a -> TreeD b)
 type TreeCExp a b = TCQueue TreeCont a b
 
 
-toCont :: Tree a -> TreeCont () a
-toCont m = TC $ \() -> m
-
-type TreeExp b = TCQueue TreeCont () b
-
-data Tree a  = Node (TreeExp a) (TreeExp a)
-             | Leaf a
+data TreeView a  = Node (TreeD a) (TreeD a)
+                 | Leaf a
           
-(<.|) :: Tree a -> TreeCExp a b -> Tree b
-Leaf a      <.| f  = val f a
-(Node l r)  <.| f  = Node (l >< f) (r >< f) 
+data TreeD a = forall x. TreeD (TreeView x) (TreeCExp x a)
 
-val :: TreeCExp a b-> (a -> Tree b)
-val s = case tviewl s of
-  TEmptyL -> Leaf
-  TC h :| t -> \x -> h x <.| t
+fromView :: TreeView a -> TreeD a
+fromView x = TreeD x tempty
 
-expr = tsingleton . TC
+(<.|) :: TreeD a -> (a -> TreeD b) -> TreeD b
+(TreeD x s) <.| f = TreeD x (s >< tsingleton (TC f))
 
-(<.||) :: Tree a -> (a -> Tree b) -> Tree b
-l <.|| r = l <.| expr r
+toView :: TreeD a -> TreeView a
+toView (TreeD x s) = case x of
+  Leaf a -> case tviewl s of 
+             TEmptyL -> Leaf a
+             TC h :| t  -> toView $ (h a) <.|| t
+  Node l r -> Node (l <.|| s) (r <.|| s)
+  where (<.||) :: TreeD a -> TreeCExp a b -> TreeD b
+        (TreeD x l) <.|| r = TreeD x (l >< r)
+

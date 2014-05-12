@@ -4,7 +4,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE NoMonomorphismRestriction,TypeSynonymInstances #-}
+{-# LANGUAGE ViewPatterns,NoMonomorphismRestriction,TypeSynonymInstances #-}
 
 module Fixed.Eff where
 
@@ -26,7 +26,7 @@ instance Functor f => Functor (FreeMonad f) where
 
 -- send a request and wait for a reply
 send :: Union r a -> Eff r a
-send u = Impure (fmap (exprm . Pure) u)
+send u = fromView $ Impure (fmap (fromView . Pure) u)
 
 
 
@@ -38,7 +38,7 @@ data Void -- no constructors
 -- The type of run ensures that all effects must be handled:
 -- only pure computations may be run.
 run :: Eff Void w -> w
-run (Pure a) = a
+run (toView -> Pure a) = a
 
 -- A convenient pattern: given a request (open union), either
 -- handle it or relay it.
@@ -73,8 +73,8 @@ get =  send (inj (State id id))
 
 runState :: Typeable s => Eff (State s :> r) w -> s -> Eff r (w,s)
 runState m s = loop s m where
- loop s (Pure x) = return (x,s)
- loop s (Impure u) = handle_relay (fmap valm u) (loop s) $
+ loop s (toView -> Pure x) = return (x,s)
+ loop s (toView -> Impure u) = handle_relay u (loop s) $
                        \(State t k) -> let s' = t s in s' `seq` loop s' (k s')
 
 -- ------------------------------------------------------------------------
@@ -102,8 +102,8 @@ mplus' m1 m2 = choose [m1,m2] >>= id
 makeChoice :: forall a r. Eff (Choose :> r) a -> Eff r [a]
 makeChoice = loop 
  where
- loop (Pure x)  = return [x]
- loop (Impure u)    = handle_relay (fmap valm u) loop (\(Choose lst k) -> handle lst k)
+ loop (toView -> Pure x)   = return [x]
+ loop (toView -> Impure u) = handle_relay u loop (\(Choose lst k) -> handle lst k)
  -- Need the signature since local bindings aren't polymorphic any more
  handle :: [t] -> (t -> Eff (Choose :> r) a) -> Eff r [a]
  handle [] _  = return []
@@ -124,11 +124,11 @@ ifte :: forall r a b.
         Member Choose r => Eff r a -> (a -> Eff r b) -> Eff r b -> Eff r b
 ifte t th el = loop [] t
  where 
- loop [] (Pure x)  = th x
+ loop [] (toView -> Pure x)  = th x
  -- add all other latent choices of t to th x
  -- this is like reflection of t
- loop jq (Pure x)  = choose ((th x) : map (\t -> t >>= th) jq) >>= id 
- loop jq (Impure u)    = interpose (fmap valm u) (loop jq) (\(Choose lst k) -> handle jq lst k)
+ loop jq (toView -> Pure x)  = choose ((th x) : map (\t -> t >>= th) jq) >>= id 
+ loop jq (toView -> Impure u)    = interpose u (loop jq) (\(Choose lst k) -> handle jq lst k)
  -- Need the signature since local bindings aren't polymorphic any more
  handle :: [Eff r a] -> [t] -> (t -> Eff r a) -> Eff r b
  handle [] [] _     = el                    -- no more choices left
@@ -161,8 +161,8 @@ data Y inn out r a = Done a | Y out (inn -> Eff (Yield inn out :> r) a)
 -- Launch a thread and report its status
 runC :: (Typeable inn, Typeable out) => Eff (Yield inn out :> r) a -> Eff r (Y inn out r a)
 runC m = loop m where
- loop (Pure x) = return (Done x)
- loop (Impure u)   = case decomp (fmap valm u) of
+ loop (toView -> Pure x) = return (Done x)
+ loop (toView -> Impure u)   = case decomp u of
    Right (Yield x c)  -> return (Y x c)
    Left u             -> send u >>= loop
 

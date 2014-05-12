@@ -1,33 +1,47 @@
+{-# LANGUAGE GADTs,ViewPatterns,ExistentialQuantification,GADTs #-}
 module Fixed.Iteratees where
-import Control.Monad 
+import Data.Interface.TSequence
+import Data.FastTCQueue
 
-import ExplicitExpr.PMonad
+type TCQueue = FastTCQueue
 
-data It i s a 
-  = Get (MCExp s (It i) i a)
-  | Done a
+newtype IC i a b = IC (a -> It i b)
+type IExp i a b = TCQueue (IC i) a b
+data It i a = forall x. It (ItView i x) (IExp i x a)
+data ItView i a 	= Done a 
+                        | Get (i -> It i a)
+fromView x = It x tempty
 
-instance PMonad (It i) where
-  return' = Done
-  (Done x) >>>= g = val g x
-  (Get f)  >>>= g = Get (f >< g)
+toView :: It i a -> ItView i a
+toView (It h t) = case h of
+   Done x -> 
+    case tviewl t of
+       TEmptyL -> Done x
+       IC hc :| tc -> toView (hc x >>>= tc)
+   Get f -> Get ((>>>= t) . f) 
+ where (>>>=) :: It i a -> IExp i a b -> It i b 
+       (It h t) >>>= r = It h (t >< r)
 
-get :: TSequence s => It i s i
-get = Get tempty
+instance Monad (It i) where
+  return = fromView . Done
+  (It m r) >>= f = It m (r >< tsingleton (IC f))
 
-race :: TSequence s => It i s a -> It i s b -> It i s (It i s a, It i s b)
-race l r 
-  | Done _ <- l = Done (l,r)
-  | Done _ <- r = Done (l,r)
+get :: It i i
+get = fromView (Get return) 
+
+race :: It i a -> It i b -> It i (It i a, It i b)
+race (toView -> l) (toView -> r) 
+  | Done _ <- l = return (fromView l, fromView r)
+  | Done _ <- r = return (fromView l, fromView r)
   | Get f <- l, Get g <- r =
     do x <- get
-       race (val f x) (val g x)
+       race (f x) (g x)
 
 
-feedAll :: TSequence s => It  a s b -> [a] -> Maybe b
-feedAll (Done a) _  = Just a
+feedAll :: It  a b -> [a] -> Maybe b
+feedAll (toView ->Done a) _  = Just a
 feedAll _        [] = Nothing
-feedAll (Get f)  (h : t) = feedAll (val f h) t
+feedAll (toView -> Get f)  (h : t) = feedAll (f h) t
 
 
 {-

@@ -7,7 +7,6 @@ import Fixed.Iteratees
 import Data.FastTCQueue
 import Control.Monad 
 
-type Its i a = It i FastTCQueue a
 
 
 
@@ -18,7 +17,7 @@ type Its i a = It i FastTCQueue a
 f >>> g = (>>= g) . f
 
 -- get n numbers and return their sum
-addNbad :: Int -> Its Int Int
+addNbad :: Int -> It Int Int
 addNbad n = foldl (>>=) get (replicate (n - 1) addGet) 
   where addGet x = liftM (+ x) get
 

@@ -6,8 +6,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoMonomorphismRestriction, IncoherentInstances #-}
 -- choose implementation
---import Fixed.Eff
-import BeforeFix.Eff
+import Fixed.Eff
+--import BeforeFix.Eff
 
 {- A benchmark for extensible effects -}
 

@@ -1,3 +1,4 @@
+
 {-# LANGUAGE GeneralizedNewtypeDeriving, ScopedTypeVariables,ExistentialQuantification,GADTs,MultiParamTypeClasses,Rank2Types #-}
 module Fixed.CCT(MonadDelimitedCont(..),reset,shift,control,shift0,control0,abort, Prompt, SubCont,CCT,runCCT) where
 
@@ -88,7 +89,7 @@ splitSeq p q = case tviewl q of
 
 
 
-{- Adapted from Control.Monad.CC.Prompt -}
+{- Adapted from LogicT package Control.Monad.CC.Prompt -}
 
 newtype Prompt r a = Prompt Int
 

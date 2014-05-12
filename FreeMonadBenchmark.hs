@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE ViewPatterns,DeriveFunctor #-}
 
 {- A micro benchmark of Freemonads -}
 
@@ -14,7 +14,7 @@ data Get i a = Get (i -> a) deriving Functor
 type It i a = FreeMonad (Get i) a
 
 get :: It i i
-get = Impure (Get (\x -> exprm $ return x))
+get = fromView $ Impure (Get (\x -> return x))
 
 -- This is the same benchmark as for iteratees, but Iteratees are now
 -- defined as free monads
@@ -31,9 +31,9 @@ addNbad :: Int -> It Int Int
 addNbad n = foldl (>>>) return (replicate n addGet) 0
 
 feedAll :: FreeMonad (Get a) b -> [a] -> Maybe b
-feedAll (Pure a) _  = Just a
+feedAll (toView -> Pure a) _  = Just a
 feedAll _        [] = Nothing
-feedAll (Impure (Get f))  (h : t) = feedAll (valm (f h)) t
+feedAll (toView -> Impure (Get f))  (h : t) = feedAll (f h) t
 
 
 testquadratic n = feedAll (addNbad n) [1..n]

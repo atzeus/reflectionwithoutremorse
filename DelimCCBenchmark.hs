@@ -7,14 +7,6 @@ import Fixed.CCT -- our fixed implementation of the above
 
 import Control.Monad.Identity
 
--- This benchmark shows that in the implementation as outline in the paper
--- A Monadic Framework for Delimited Continuations, by R. Kent Dybvig, Simon Peyton Jones and Amr Sabry
--- as implemented in the Control.Monad.CC module, observing the first element in continuation
--- is O(n) where n is the number of elements. This is because the sequence
--- is represented as a binary tree. Another problem is that in the implementation
--- of Dyvig et al. obtaining a continuation costs O(n+p) where n is the size of the continuation
--- and p is the number of pushed prompts. With our implementation this is linear in the number
--- of prompts (not shown by the benchmark).
 
 
 test n = 

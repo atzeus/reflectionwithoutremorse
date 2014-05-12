@@ -8,7 +8,7 @@ instance Functor f => Monad (FreeMonad f) where
   (Pure x)    >>= f = f x
   (Impure t)  >>= f = Impure (fmap (>>= f) t)
 
-valm = id
-exprm = id
+fromView = id
+toView = id
 
 
