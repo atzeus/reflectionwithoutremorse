@@ -6,7 +6,6 @@ This code is organized as follows:
 * BeforeFix contains the code of various monads before applying our techniques
 * AfterFix  contains the code of the same monads with our techniques applied
 * Data contains various type-aligned sequences
-* ExplicitExpr contains type classes to factor out steps 3 and 4 as described in the paper.
 * CPS contains various continuation passing style constructs
 
 To run the LogicT examples with a two continuation passing implementation do:
