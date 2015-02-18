@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE ViewPatterns, LambdaCase #-}
 module Fixed.Logic where
 
 import Control.Monad
@@ -29,7 +29,10 @@ instance Monad m => Monad (ML m) where
 
 instance Monad m => MonadPlus (ML m) where
   mzero = ML empty
-  mplus (ML a) (ML b) = ML (a .>< b)
+  mplus (toView -> m) n = fromView $ m >>= return . \case
+       Nothing    -> Nothing
+       Just (h,t) -> Just (h, cat t n) 
+    where cat (ML l) (ML r) = ML $ l .>< r 
 
 instance MonadTrans ML where
   lift m = fromView (m >>= single)
