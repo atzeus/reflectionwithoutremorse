@@ -30,7 +30,7 @@ instance Monad m => Monad (ML m) where
 instance Monad m => MonadPlus (ML m) where
   mzero = ML empty
   mplus (toView -> m) n = fromView $ m >>= return . \case
-       Nothing    -> Nothing
+       Nothing    -> toView n
        Just (h,t) -> Just (h, cat t n) 
     where cat (ML l) (ML r) = ML $ l .>< r 
 
